@@ -47,5 +47,26 @@ public class TranslatorEndpointTest {
 		assertNotNull(response);
 		assertThat(response, instanceOf(GetTranslationResponse.class));
 		assertThat(((GetTranslationResponse) response).getTranslation(), is("Esto es una prueba de servicio de traducción"));
-	}	
+	}
+
+	@Test
+	public void testSendAndReceiveSpanishGerman() {
+		GetTranslationRequest request = new GetTranslationRequest();
+
+		//Setting up the request parameters
+		request.setLangFrom("es");							//Language of the text to be translated
+		request.setLangTo("de");							//Language which the text is going to be translated
+		request.setText("Esto es una prueba sencilla");		//Text to be translated
+
+		//Petition to the service running locally
+		Object response = new WebServiceTemplate(marshaller).marshalSendAndReceive("http://localhost:"
+				+ port + "/ws", request);
+
+		//Check that we received a response
+		assertNotNull(response);
+		//Check that response is an instance of GetTranslationResponse.class
+		assertThat(response, instanceOf(GetTranslationResponse.class));
+		//Check that the translated text matches the one we expected
+		assertThat(((GetTranslationResponse) response).getTranslation(), is("Dies ist ein einfacher test"));
+	}
 }
